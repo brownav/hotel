@@ -3,9 +3,6 @@ require 'date'
 require 'pry'
 
 module Hotel
-  # access list of reservations for specific date
-  # access list of all rooms in hotel
-
   class Admin
     attr_reader :rooms, :reservations
 
@@ -20,7 +17,6 @@ module Hotel
       return rooms
     end
 
-    # takes in an instance of reservation
     def book_room(reservation)
       if reservation.class != Reservation
         raise ArgumentError.new("Can only use reservation instance to book a room")
@@ -30,7 +26,6 @@ module Hotel
       return @rooms
     end
 
-    # takes in an instance of reservation
     def add_reservation(reservation)
       if reservation.class != Reservation
         raise ArgumentError.new("Can only add reservation instance to reservations collection")
@@ -42,16 +37,18 @@ module Hotel
     def reservations_for_day(date)
       date = validate_date(date)
 
-      day_list = []
-      @reservations.each do |reservation|
-        reservation.dates.each do |day|
-          if day == date
-            day_list << day
-          end
-        end
-      end
+      day_list = @reservations.select { |reservation| reservation.dates.include? date }
       return day_list
-      binding.pry
+      #
+      # day_list = []
+      # @reservations.each do |reservation|
+      #   reservation.dates.each do |day|
+      #     if day == date
+      #       day_list << reservation
+      #     end
+      #   end
+      # end
+      # return day_list
     end
 
     def validate_date(date)

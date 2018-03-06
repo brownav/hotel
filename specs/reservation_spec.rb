@@ -6,13 +6,13 @@ describe "Reservation class" do
 
     ### raises error if end_date is before start_date
     it "is an instance of Reservation" do
-      reservation = Hotel::Reservation.new(['6th March 2017', '7th March 2017'])
+      reservation = Hotel::Reservation.new(['6 March', '7 March'])
 
       reservation.must_be_kind_of Hotel::Reservation
     end
 
     it "input is an array of strings" do
-      input = ['6th March 2018', '7th March 2018']
+      input = ['6 March', '7 March']
 
       reservation = Hotel::Reservation.new(input)
 
@@ -25,7 +25,7 @@ describe "Reservation class" do
     end
 
     it "stores input as an instance of date" do
-      reservation = Hotel::Reservation.new(['6th March 2017', '7th March 2017'])
+      reservation = Hotel::Reservation.new(['6th March', '7 March'])
 
       first_day = reservation.dates.first
       last_day = reservation.dates.last
@@ -35,7 +35,7 @@ describe "Reservation class" do
     end
 
     it "is set up for specific attributes and data types" do
-      reservation = Hotel::Reservation.new(['6th March 2017', '7th March 2017'])
+      reservation = Hotel::Reservation.new(['6 March', '7 March'])
 
       reservation.must_respond_to :dates
       reservation.dates.must_be_kind_of Array
@@ -43,7 +43,7 @@ describe "Reservation class" do
 
     describe "cost method" do
       before do
-        @reservation = Hotel::Reservation.new(['6th March 2017', '7th March 2017'])
+        @reservation = Hotel::Reservation.new(['6 March', '7 March'])
       end
 
       it "charge at least 200" do

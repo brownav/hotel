@@ -1,7 +1,6 @@
 require_relative 'spec_helper'
 
 describe "Admin class" do
-
   describe "Initializer" do
     it "is an instance of Admin" do
       admin = Hotel::Admin.new
@@ -12,12 +11,15 @@ describe "Admin class" do
     it "is set up for specific attributes and data types" do
       admin = Hotel::Admin.new
 
-      admin.must_respond_to :rooms
-      admin.rooms.must_be_kind_of Array
-      admin.rooms.length.must_equal 20
+      admin.must_respond_to :free_rooms
+      admin.must_respond_to :booked_rooms
 
+      admin.free_rooms.each { |room| room.must_be_kind_of Hotel::Room }
+      admin.free_rooms.length.must_equal 20
       admin.must_respond_to :reservations
       admin.reservations.must_be_kind_of Array
+      admin.booked_rooms.length.must_equal 0
+      admin.booked_rooms.must_be_kind_of Array
     end
   end
 
@@ -33,11 +35,11 @@ describe "Admin class" do
     it "removes a room from rooms list" do
       admin = Hotel::Admin.new
       reservation = Hotel::Reservation.new(['12 May', '13 May'])
-      initial_rooms = admin.rooms.length
+      free_rooms = admin.free_rooms.length
 
       admin.book_room(reservation)
 
-      admin.rooms.length.must_equal initial_rooms - 1
+      admin.free_rooms.length.must_equal free_rooms - 1
     end
   end
 
@@ -104,6 +106,21 @@ describe "Admin class" do
       admin.reservations_for_day('15 March').each do |res|
         res.dates.must_include Date.parse('15 March')
       end
+    end
+
+    describe "free_rooms method" do
+      it "accepts an instance of date" do
+
+
+      end
+
+      it "must return a collection of free rooms" do
+      end
+
+
+      it "must return free rooms for selected days" do
+      end
+
     end
 
   end

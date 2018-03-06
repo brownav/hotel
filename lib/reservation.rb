@@ -3,7 +3,6 @@ require 'pry'
 
 module Hotel
   class Reservation
-
     attr_reader :dates
 
     def initialize(input)

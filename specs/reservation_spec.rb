@@ -1,9 +1,7 @@
 require_relative 'spec_helper'
 
 describe "Reservation class" do
-
   describe "Initializer" do
-
     ### raises error if end_date is before start_date
     it "is an instance of Reservation" do
       reservation = Hotel::Reservation.new(['6 March', '7 March'])
@@ -32,6 +30,7 @@ describe "Reservation class" do
 
       first_day.must_be_kind_of Date
       last_day.must_be_kind_of Date
+      first_day.must_be :<, last_day
     end
 
     it "is set up for specific attributes and data types" do

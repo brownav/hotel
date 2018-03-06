@@ -1,19 +1,21 @@
 require_relative 'reservation'
+require_relative 'room'
 require 'date'
 require 'pry'
 
 module Hotel
   class Admin
-    attr_reader :rooms, :reservations
+    attr_reader :free_rooms, :reservations, :booked_rooms
 
     def initialize
       @reservations = []
-      @rooms = rooms_list
+      @free_rooms = room_list
+      @booked_rooms = []
     end
 
-    def rooms_list
+    def room_list
       rooms = []
-      (1..20).each { |i| rooms << i }
+      (1..20).each { |i| rooms << i = Hotel::Room.new(i) }
       return rooms
     end
 
@@ -21,16 +23,14 @@ module Hotel
       if reservation.class != Reservation
         raise ArgumentError.new("Can only use reservation instance to book a room")
       end
-
-      @rooms.pop
-      return @rooms
+      @booked_rooms << @free_rooms.pop
     end
 
     def add_reservation(reservation)
       if reservation.class != Reservation
         raise ArgumentError.new("Can only add reservation instance to reservations collection")
       end
-
+      book_room(reservation)
       @reservations << reservation
     end
 
@@ -38,17 +38,12 @@ module Hotel
       date = validate_date(date)
 
       day_list = @reservations.select { |reservation| reservation.dates.include? date }
-      return day_list
-      #
-      # day_list = []
-      # @reservations.each do |reservation|
-      #   reservation.dates.each do |day|
-      #     if day == date
-      #       day_list << reservation
-      #     end
-      #   end
-      # end
-      # return day_list
+    end
+
+    def free_rooms_for_day(date)
+      date = validate_date(date)
+      reservations_for_day(date)
+      @free_rooms
     end
 
     def validate_date(date)

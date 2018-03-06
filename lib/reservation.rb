@@ -11,10 +11,6 @@ module Hotel
       @dates = convert_dates(input)
     end
 
-    #def book_room
-
-    #end
-
     def cost
       @dates.length * 200
     end

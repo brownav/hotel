@@ -18,13 +18,8 @@ module Hotel
     end
 
     def book_room(reservation)
-      # if reservation.class != Reservation
-      #   raise ArgumentError.new("Can only use reservation instance to book a room")
-      # end
-
-      if free_rooms_for_dates(reservation.dates).length == 0
-        raise ArgumentError.new("Not enough rooms to add reservation")
-        @reservations.pop
+      if reservation.class != Reservation
+        raise ArgumentError.new("Can only use reservation instance to book a room")
       end
 
       free_rooms_for_dates(reservation.dates).pop
@@ -33,6 +28,8 @@ module Hotel
     def add_reservation(reservation)
       if reservation.class != Reservation
         raise ArgumentError.new("Can only add reservation instance to reservations collection")
+      elsif free_rooms_for_dates(reservation.dates).length == 0
+        raise ArgumentError.new("No free rooms for these dates")
       end
 
       @reservations << reservation

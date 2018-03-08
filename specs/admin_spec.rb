@@ -21,22 +21,12 @@ describe "Admin class" do
   end
 
   describe "book_room method" do
-    # it "raises error if input is not instance of reservation" do
-    #   admin = Hotel::Admin.new
-    #   reservation = Hotel::Reservation.new(['12 May', '13 May'])
-    #
-    #   proc {admin.book_room("")}.must_raise ArgumentError
-    #   proc {admin.book_room('12 May 2017')}.must_raise ArgumentError
-    # end
-
-    it "raises error if there are no free rooms" do
+    it "raises error if input is not instance of reservation" do
       admin = Hotel::Admin.new
+      reservation = Hotel::Reservation.new(['12 May', '13 May'])
 
-      20.times do
-        admin.add_reservation(Hotel::Reservation.new(["5 March"]))
-      end
-
-      proc {admin.add_reservation(Hotel::Reservation.new(["5 March"]))}.must_raise ArgumentError
+      proc {admin.book_room("")}.must_raise ArgumentError
+      proc {admin.book_room('12 May 2017')}.must_raise ArgumentError
     end
 
     it "removes a room from rooms list" do
@@ -56,6 +46,16 @@ describe "Admin class" do
 
       proc {admin.add_reservation(" ")}.must_raise ArgumentError
       proc {admin.add_reservation('reservation')}.must_raise ArgumentError
+    end
+
+    it "raises error if there are no free rooms for those reservation dates" do
+      admin = Hotel::Admin.new
+
+      20.times do
+        admin.add_reservation(Hotel::Reservation.new(["5 March"]))
+      end
+
+      proc {admin.add_reservation(Hotel::Reservation.new(["5 March"]))}.must_raise ArgumentError
     end
 
     it "must add reservations to reservations collection" do

@@ -12,7 +12,6 @@ describe "Admin class" do
       admin = Hotel::Admin.new
 
       admin.must_respond_to :rooms
-      # admin.free_rooms.each { |room| room.must_be_kind_of Hotel::Room }
       admin.rooms.length.must_equal 20
       admin.must_respond_to :reservations
       admin.reservations.must_be_kind_of Array
@@ -117,9 +116,9 @@ describe "Admin class" do
       admin.add_reservation(res2)
       admin.add_reservation(res3)
 
-      admin.free_rooms_for_dates(['12 May']).must_be_kind_of Array
-      admin.free_rooms_for_dates(['12 May', '13 May']).length.must_equal 18
-      admin.free_rooms_for_dates(['15 March']).length.must_equal 20
+      admin.free_rooms_for_dates(['15 March']).length.must_equal 19
+      admin.free_rooms_for_dates(['20 May']).must_be_kind_of Array
+      admin.free_rooms_for_dates(['12 May']).length.must_equal 18
     end
 
   end

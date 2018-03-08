@@ -2,6 +2,7 @@ require_relative 'reservation'
 # require_relative 'room'
 require 'date'
 require 'pry'
+require 'awesome_print'
 
 module Hotel
   class Admin
@@ -23,7 +24,7 @@ module Hotel
         raise ArgumentError.new("Can only use reservation instance to book a room")
       end
 
-      free_rooms_for_dates(reservation.dates).pop
+      @rooms.pop
     end
 
     def add_reservation(reservation)
@@ -43,16 +44,14 @@ module Hotel
 
     def free_rooms_for_dates(days)
       days = validate_dates(days)
+      @rooms = room_list
 
-      reserved_list = []
       @reservations.each do |reservation|
-        match = reservation.dates & days
-        if !(match.empty?)
-          reserved_list << reservation
+        overlap = reservation.dates & days
+        if overlap.length > 0
+          @rooms.pop
         end
       end
-
-      @rooms.pop(reserved_list.length)
 
       return @rooms
     end

@@ -15,7 +15,7 @@ module Hotel
     end
 
     def validate_input(input)
-      if input == nil || input.length < 1
+      if input == nil || input[0].class != String
         raise ArgumentError.new "Invalid date/s"
       end
     end

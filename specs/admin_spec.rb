@@ -15,8 +15,6 @@ describe "Admin class" do
       admin.rooms.length.must_equal 20
       admin.must_respond_to :reservations
       admin.reservations.must_be_kind_of Array
-      # admin.booked_rooms.length.must_equal 0
-      # admin.booked_rooms.must_be_kind_of Array
     end
   end
 
@@ -67,11 +65,10 @@ describe "Admin class" do
 
       admin.reservations.length.must_equal initial + 1
     end
-
   end
 
   describe "reservations_on_day method" do
-    it "must raise error if input is invalid" do
+    it "must raise error if dates are invalid" do
       admin = Hotel::Admin.new
 
       proc {admin.reservations_on_day("")}.must_raise ArgumentError
@@ -117,6 +114,15 @@ describe "Admin class" do
   end
 
   describe "free_rooms_for_dates method" do
+    it "raises an error if dates are invalid" do
+      admin = Hotel::Admin.new
+
+      proc {admin.reservations_on_day(['abcdefg'])}.must_raise ArgumentError
+      proc {admin.reservations_on_day([23])}.must_raise ArgumentError
+      proc {admin.reservations_on_day([nil])}.must_raise ArgumentError
+      proc {admin.reservations_on_day([""])}.must_raise ArgumentError
+    end
+
     it "returns collection of available rooms for given dates" do
       admin = Hotel::Admin.new
       res1 = Hotel::Reservation.new(['12 May'])
@@ -128,12 +134,11 @@ describe "Admin class" do
 
       admin.free_rooms_for_dates(['20 May']).must_be_kind_of Array
 
+      admin.free_rooms_for_dates(['20 May']).length.must_equal 20
       admin.free_rooms_for_dates(['15 March']).length.must_equal 19
       admin.free_rooms_for_dates(['12 May']).length.must_equal 18
-      admin.free_rooms_for_dates(['20 May']).length.must_equal 20
       admin.free_rooms_for_dates(['12 May', '13 May', '15 March']).length.must_equal 17
     end
-
   end
 
 end

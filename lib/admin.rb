@@ -57,12 +57,12 @@ module Hotel
     end
 
     def validate_dates(dates)
-      if dates.class == Reservation || dates[0].class == Date
+      if dates.class == String
+        Date.parse(dates)
+      elsif dates.class == Reservation || dates[0].class == Date
         return dates
       elsif dates == nil || dates[0].class != String
         raise ArgumentError.new("date is invalid")
-      elsif dates.class == String
-        Date.parse(dates)
       else
         dates.map { |date| date = Date.parse(date) }
       end

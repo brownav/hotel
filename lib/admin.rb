@@ -1,8 +1,6 @@
 require_relative 'reservation'
-# require_relative 'room'
 require 'date'
 require 'pry'
-require 'awesome_print'
 
 module Hotel
   class Admin
@@ -20,11 +18,16 @@ module Hotel
     end
 
     def book_room(reservation)
-      if reservation.class != Reservation
-        raise ArgumentError.new("Can only use reservation instance to book a room")
+      # if reservation.class != Reservation
+      #   raise ArgumentError.new("Can only use reservation instance to book a room")
+      # end
+
+      if free_rooms_for_dates(reservation.dates).length == 0
+        raise ArgumentError.new("Not enough rooms to add reservation")
+        @reservations.pop
       end
 
-      @rooms.pop
+      free_rooms_for_dates(reservation.dates).pop
     end
 
     def add_reservation(reservation)

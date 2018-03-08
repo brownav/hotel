@@ -21,20 +21,30 @@ describe "Admin class" do
   end
 
   describe "book_room method" do
-    it "raises error if input is not instance of reservation" do
-      admin = Hotel::Admin.new
-      reservation = Hotel::Reservation.new(['12 May', '13 May'])
+    # it "raises error if input is not instance of reservation" do
+    #   admin = Hotel::Admin.new
+    #   reservation = Hotel::Reservation.new(['12 May', '13 May'])
+    #
+    #   proc {admin.book_room("")}.must_raise ArgumentError
+    #   proc {admin.book_room('12 May 2017')}.must_raise ArgumentError
+    # end
 
-      proc {admin.book_room("")}.must_raise ArgumentError
-      proc {admin.book_room('12 May 2017')}.must_raise ArgumentError
+    it "raises error if there are no free rooms" do
+      admin = Hotel::Admin.new
+
+      20.times do
+        admin.add_reservation(Hotel::Reservation.new(["5 March"]))
+      end
+
+      proc {admin.add_reservation(Hotel::Reservation.new(["5 March"]))}.must_raise ArgumentError
     end
 
     it "removes a room from rooms list" do
       admin = Hotel::Admin.new
-      reservation = Hotel::Reservation.new(['12 May', '13 May'])
+      res1 = Hotel::Reservation.new(['12 May', '13 May'])
       free_rooms = admin.rooms.length
 
-      admin.book_room(reservation)
+      admin.book_room(res1)
 
       admin.rooms.length.must_equal free_rooms - 1
     end
@@ -116,9 +126,12 @@ describe "Admin class" do
       admin.add_reservation(res2)
       admin.add_reservation(res3)
 
-      admin.free_rooms_for_dates(['15 March']).length.must_equal 19
       admin.free_rooms_for_dates(['20 May']).must_be_kind_of Array
+
+      admin.free_rooms_for_dates(['15 March']).length.must_equal 19
       admin.free_rooms_for_dates(['12 May']).length.must_equal 18
+      admin.free_rooms_for_dates(['20 May']).length.must_equal 20
+      admin.free_rooms_for_dates(['12 May', '13 May', '15 March']).length.must_equal 17
     end
 
   end

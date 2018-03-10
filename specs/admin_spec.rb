@@ -158,12 +158,14 @@ describe "Admin class" do
 
       free_rooms = admin.rooms.length
       block = admin.create_block_of_rooms(res, 3)
-      blocked_rooms = block.first[:rooms].length
+      blocked_rooms = block.first[:available_rooms].length
       remaining_rooms = admin.rooms.length
 
-      block.first.keys.must_equal [:rooms, :dates]
-      blocked_rooms.must_equal 3
+      block.first.keys.must_equal [:id, :dates, :available_rooms, :booked_rooms]
+      block.first[:id].must_be_kind_of Integer
       block.first[:dates].must_equal res.dates
+      blocked_rooms.must_equal 3
+      block.first[:booked_rooms].length.must_equal 0
       (free_rooms - blocked_rooms).must_equal remaining_rooms
     end
 

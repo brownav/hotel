@@ -49,8 +49,10 @@ module Hotel
       end
 
       block = {}
-      block[:rooms] = free_rooms_for_dates(dates).pop(num_rooms)
+      block[:id] = @blocks.length + 1
       block[:dates] = dates
+      block[:available_rooms] = free_rooms_for_dates(dates).pop(num_rooms)
+      block[:booked_rooms] = []
       @blocks << block
 
       return @blocks

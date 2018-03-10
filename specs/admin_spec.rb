@@ -133,12 +133,55 @@ describe "Admin class" do
       admin.add_reservation(res3)
 
       admin.free_rooms_for_dates(['20 May']).must_be_kind_of Array
-
       admin.free_rooms_for_dates(['20 May']).length.must_equal 20
       admin.free_rooms_for_dates(['15 March']).length.must_equal 19
       admin.free_rooms_for_dates(['12 May']).length.must_equal 18
       admin.free_rooms_for_dates(['12 May', '13 May', '15 March']).length.must_equal 17
     end
+  end
+
+  describe "create_block_of_rooms method" do
+    it "is set up for specific data types and attributes" do
+      admin = Hotel::Admin.new
+      res = Hotel::Reservation.new(['12 May', '13 May', '14 May'])
+
+      block = admin.create_block_of_rooms(res, 3)
+
+      block.must_be_kind_of Array
+      block.first.must_be_kind_of Hash
+      admin.must_respond_to :blocks
+    end
+
+    it "accurately books a block of free rooms" do
+      admin = Hotel::Admin.new
+      res = Hotel::Reservation.new(['12 May', '13 May', '14 May'])
+
+      free_rooms = admin.rooms.length
+      block = admin.create_block_of_rooms(res, 3)
+      blocked_rooms = block.first[:rooms].length
+      remaining_rooms = admin.rooms.length
+
+      block.first.keys.must_equal [:rooms, :dates]
+      blocked_rooms.must_equal 3
+      block.first[:dates].must_equal res.dates
+      (free_rooms - blocked_rooms).must_equal remaining_rooms
+    end
+
+    it "raises error for invalid room input" do
+      # reservations/dates already validated via helper method
+      admin = Hotel::Admin.new
+      res = Hotel::Reservation.new(['12 May', '13 May', '14 May'])
+
+      string = "flower"
+      less_than_one = 0
+      more_than_five = 6
+
+      proc {admin.create_block_of_rooms(res, string)}.must_raise ArgumentError
+      proc {admin.create_block_of_rooms(res, less_than_one)}.must_raise ArgumentError
+      proc {admin.create_block_of_rooms(res, more_than_five)}.must_raise
+      ArgumentError
+    end
+
   end
 
 end

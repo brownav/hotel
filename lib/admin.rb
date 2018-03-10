@@ -4,11 +4,12 @@ require 'pry'
 
 module Hotel
   class Admin
-    attr_reader :rooms, :reservations
+    attr_reader :rooms, :reservations, :blocks
 
     def initialize
       @reservations = []
       @rooms = room_list
+      @blocks = []
     end
 
     def room_list
@@ -36,14 +37,39 @@ module Hotel
       book_room(reservation)
     end
 
+    def create_block_of_rooms(reservation, num_rooms)
+      dates = validate_dates(reservation.dates)
+
+      if num_rooms.class != Integer || num_rooms < 1 || num_rooms > 5
+        raise ArgumentError.new("number of rooms is invalid")
+      end
+
+      if free_rooms_for_dates(dates).length < num_rooms
+        raise ArgumentError.new("Not enough free rooms for these dates")
+      end
+
+      block = {}
+      block[:rooms] = free_rooms_for_dates(dates).pop(num_rooms)
+      block[:dates] = dates
+      @blocks << block
+
+      return @blocks
+    end
+
+    # book_room_in_block(block_id)
+
+    # check whether given block has any rooms available
+
     def reservations_on_day(day)
       day = validate_dates(day)
+
       reserved_list = @reservations.select { |reservation| reservation.dates.include? day }
       return reserved_list
     end
 
     def free_rooms_for_dates(days)
       days = validate_dates(days)
+
       @rooms = room_list
 
       @reservations.each do |reservation|
@@ -69,5 +95,4 @@ module Hotel
     end
 
   end
-
 end

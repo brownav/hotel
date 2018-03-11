@@ -169,7 +169,7 @@ describe "Admin class" do
       (free_rooms - blocked_rooms).must_equal remaining_rooms
     end
 
-    it "raises error for invalid room input" do
+    it "raises an error for invalid number of rooms input" do
       # reservations/dates already validated via helper method
       admin = Hotel::Admin.new
       res = Hotel::Reservation.new(['12 May', '13 May', '14 May'])
@@ -182,6 +182,35 @@ describe "Admin class" do
       proc {admin.create_block_of_rooms(res, less_than_one)}.must_raise ArgumentError
       proc {admin.create_block_of_rooms(res, more_than_five)}.must_raise
       ArgumentError
+    end
+  end
+
+  describe "book_room_in_block method" do
+    it "raises an error for an invalid block id" do
+      admin = Hotel::Admin.new
+
+      string = "string"
+      negative = -1
+      too_high = 10
+      empty = nil
+
+      proc {admin.book_room_in_block(string)}.must_raise ArgumentError
+      proc {admin.book_room_in_block(negative)}.must_raise ArgumentError
+      proc {admin.book_room_in_block(too_high)}.must_raise ArgumentError
+      proc {admin.book_room_in_block(empty)}.must_raise ArgumentError
+    end
+
+    it "books an available room from a given block" do
+      admin = Hotel::Admin.new
+      res = Hotel::Reservation.new(["12 May", "13 May", "14 May"])
+      block_array = admin.create_block_of_rooms(res, 5)
+      block = block_array[0]
+
+      open_rooms = block[:available_rooms].length
+      admin.book_room_in_block(1)
+
+      open_rooms.must_equal open_rooms - 1
+      block[:booked_rooms].length.must_equal 1
     end
 
   end

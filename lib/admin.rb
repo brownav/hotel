@@ -42,9 +42,7 @@ module Hotel
 
       if num_rooms.class != Integer || num_rooms < 1 || num_rooms > 5
         raise ArgumentError.new("Number of rooms is invalid #{num_rooms}")
-      end
-
-      if free_rooms_for_dates(dates).length < num_rooms
+      elsif free_rooms_for_dates(dates).length < num_rooms
         raise ArgumentError.new("Not enough free rooms for these dates #{dates}")
       end
 
@@ -64,11 +62,13 @@ module Hotel
       end
 
       block = @blocks[block_id - 1]
-      block[:booked_rooms] = block[:available_rooms].pop
+      block[:booked_rooms] << block[:available_rooms].pop
     end
 
-    # check whether given block has any rooms available
-      # returns list of available rooms for particular block
+    def free_rooms_in_block(block_id)
+      block = @blocks[block_id - 1]
+      return block[:available_rooms]
+    end
 
     def reservations_on_day(day)
       day = validate_dates(day)

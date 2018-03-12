@@ -200,7 +200,7 @@ describe "Admin class" do
       proc {admin.book_room_in_block(empty)}.must_raise ArgumentError
     end
 
-    it "books an available room from a given block" do
+    it "books an free room from a given block" do
       admin = Hotel::Admin.new
       res = Hotel::Reservation.new(["12 May", "13 May", "14 May"])
       block_array = admin.create_block_of_rooms(res, 5)
@@ -208,11 +208,25 @@ describe "Admin class" do
 
       open_rooms = block[:available_rooms].length
       admin.book_room_in_block(1)
+      remaining_open_rooms = block[:available_rooms].length
 
-      open_rooms.must_equal open_rooms - 1
+      remaining_open_rooms.must_equal open_rooms - 1
       block[:booked_rooms].length.must_equal 1
+    end
+  end
+
+  describe "free_rooms_in_block method" do
+    it "returns list of free rooms for correct block" do
+      admin = Hotel::Admin.new
+      res = Hotel::Reservation.new(["12 May", "13 May"])
+      block = admin.create_block_of_rooms(res, 4).first
+
+      free_rooms = admin.free_rooms_in_block(1)
+
+      free_rooms.must_be_kind_of Array
+      free_rooms.length.must_equal 4
+      block[:available_rooms].must_equal free_rooms
     end
 
   end
-
 end

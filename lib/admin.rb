@@ -38,6 +38,10 @@ module Hotel
     end
 
     def create_block_of_rooms(reservation, num_rooms)
+      if reservation.class != Reservation
+        raise ArgumentError.new("Not a valid reservation instance #{reservation}")
+      end
+
       dates = validate_dates(reservation.dates)
 
       if num_rooms.class != Integer || num_rooms < 1 || num_rooms > 5
@@ -53,7 +57,9 @@ module Hotel
       block[:booked_rooms] = []
       @blocks << block
 
-      return @blocks
+      @reservations << reservation
+
+      return block
     end
 
     def book_room_in_block(block_id)
@@ -74,6 +80,7 @@ module Hotel
       day = validate_dates(day)
 
       reserved_list = @reservations.select { |reservation| reservation.dates.include? day }
+      
       return reserved_list
     end
 
@@ -81,6 +88,7 @@ module Hotel
       days = validate_dates(days)
 
       @rooms = room_list
+      @blocks = []
 
       @reservations.each do |reservation|
         overlap = reservation.dates & days

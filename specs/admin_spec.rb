@@ -59,8 +59,8 @@ describe "Admin class" do
     it "must add reservations to reservations collection" do
       admin = Hotel::Admin.new
       reservation = Hotel::Reservation.new(['12 May', '13 May','14 May'])
-      initial = admin.reservations.length
 
+      initial = admin.reservations.length
       admin.add_reservation(reservation)
 
       admin.reservations.length.must_equal initial + 1
@@ -147,41 +147,42 @@ describe "Admin class" do
 
       block = admin.create_block_of_rooms(res, 3)
 
-      block.must_be_kind_of Array
-      block.first.must_be_kind_of Hash
+      block.must_be_kind_of Hash
       admin.must_respond_to :blocks
+      block.keys.must_equal [:id, :dates, :available_rooms, :booked_rooms]
+      block[:id].must_be_kind_of Integer
+      block[:dates].must_equal res.dates
     end
 
     it "accurately books a block of free rooms" do
       admin = Hotel::Admin.new
-      res = Hotel::Reservation.new(['12 May', '13 May', '14 May'])
+      res = Hotel::Reservation.new(["12 May", "13 May", "14 May"])
 
       free_rooms = admin.rooms.length
       block = admin.create_block_of_rooms(res, 3)
-      blocked_rooms = block.first[:available_rooms].length
+      blocked_rooms = block[:available_rooms].length
       remaining_rooms = admin.rooms.length
 
-      block.first.keys.must_equal [:id, :dates, :available_rooms, :booked_rooms]
-      block.first[:id].must_be_kind_of Integer
-      block.first[:dates].must_equal res.dates
       blocked_rooms.must_equal 3
-      block.first[:booked_rooms].length.must_equal 0
+      block[:booked_rooms].length.must_equal 0
       (free_rooms - blocked_rooms).must_equal remaining_rooms
     end
 
-    it "raises an error for invalid number of rooms input" do
-      # reservations/dates already validated via helper method
+    it "raises an error for invalid input" do
       admin = Hotel::Admin.new
-      res = Hotel::Reservation.new(['12 May', '13 May', '14 May'])
+      res = Hotel::Reservation.new(["12 May", "13 May", "14 May"])
 
       string = "flower"
       less_than_one = 0
       more_than_five = 6
+      empty = nil
 
       proc {admin.create_block_of_rooms(res, string)}.must_raise ArgumentError
       proc {admin.create_block_of_rooms(res, less_than_one)}.must_raise ArgumentError
       proc {admin.create_block_of_rooms(res, more_than_five)}.must_raise
       ArgumentError
+      proc {admin.create_block_of_rooms(string, 4)}.must_raise ArgumentError
+      proc {admin.create_block_of_rooms(nil, nil)}.must_raise ArgumentError
     end
   end
 
@@ -203,8 +204,7 @@ describe "Admin class" do
     it "books an free room from a given block" do
       admin = Hotel::Admin.new
       res = Hotel::Reservation.new(["12 May", "13 May", "14 May"])
-      block_array = admin.create_block_of_rooms(res, 5)
-      block = block_array[0]
+      block = admin.create_block_of_rooms(res, 5)
 
       open_rooms = block[:available_rooms].length
       admin.book_room_in_block(1)
@@ -219,14 +219,15 @@ describe "Admin class" do
     it "returns list of free rooms for correct block" do
       admin = Hotel::Admin.new
       res = Hotel::Reservation.new(["12 May", "13 May"])
-      block = admin.create_block_of_rooms(res, 4).first
+      block = admin.create_block_of_rooms(res, 4)
 
       free_rooms = admin.free_rooms_in_block(1)
 
       free_rooms.must_be_kind_of Array
       free_rooms.length.must_equal 4
       block[:available_rooms].must_equal free_rooms
+      block[:id].must_equal 1
     end
-
   end
+
 end

@@ -9,14 +9,8 @@ module Hotel
 
     def initialize
       @reservations = []
-      @rooms = room_list
+      @rooms = (1..20).to_a
       @blocks = []
-    end
-
-    def room_list
-      rooms = []
-      (1..20).each { |i| rooms << i }
-      return rooms
     end
 
     def book_room(reservation)
@@ -83,7 +77,7 @@ module Hotel
     def free_rooms_for_dates(days)
       days = validate_dates(days)
 
-      @rooms = room_list
+      @rooms = (1..20).to_a
       @blocks = []
 
       @reservations.each do |reservation|

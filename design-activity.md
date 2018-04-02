@@ -32,3 +32,7 @@ This would change the unit_price of each CartEntry object based on quantity. Imp
 <!--Which implementation better adheres to the single responsibility principle?-->
 Implementation B better adheres better to the single responsibility principle as each class deals with it's own bit of logic which will then inform a final output from Order#total_price. Rather than Order#total_price taking on the load of manipulating other class instance variables, it simply calls on the methods stored in the other classes to inform a final output.
 <!--Bonus question once you've read Metz ch. 3: Which implementation is more loosely coupled?-->
+
+<!-- HOTEL REFACTORING
+Describe what changes you would need to make to improve Hotel design, and how the resulting design would be an improvement. -->
+Hotel::Admin takes on too many responsibilities, one area for single responsibility improvement would be to create a Hotel::Block class. The Admin class was creating blocks and directly modifying keys of these blocks. I was equating keys to attributes and this made the methods and testing bloated. To simplify, I should create a block class which has each key as an attribute which returns values. Also, any needed changes to each block should be a method in the block class. In Hotel::Admin, I should only be calling block attributes and methods to make changes to block objects. 

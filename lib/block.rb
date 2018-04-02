@@ -16,8 +16,5 @@ module Hotel
     def book_room
       @booked_rooms << @open_rooms.pop
     end
-
   end
-
-
 end

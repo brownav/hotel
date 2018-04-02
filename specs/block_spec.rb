@@ -1,6 +1,5 @@
 require_relative 'spec_helper'
 
-
 describe "Block class" do
   before do
     @block = Hotel::Block.new(id: 1, dates: ["12 May", "13 May", "14 May"], open_rooms: [1, 2, 3], booked_rooms: [])
